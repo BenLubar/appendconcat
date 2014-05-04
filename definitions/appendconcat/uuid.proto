@@ -1,0 +1,6 @@
+package appendconcat;
+
+message UUID {
+	required fixed64 high = 1;
+	required fixed64 low  = 2;
+}

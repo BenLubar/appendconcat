@@ -1,0 +1,8 @@
+package appendconcat;
+
+message Time {
+	required sint64 year = 1;
+	optional uint64 month = 2;
+	optional uint64 day = 3;
+	optional uint64 second = 4;
+}

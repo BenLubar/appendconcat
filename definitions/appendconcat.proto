@@ -1,0 +1,7 @@
+package appendconcat;
+
+import "appendconcat/time.proto";
+
+message Message {
+	required Time time = 1;
+}
