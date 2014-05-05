@@ -1,7 +1,9 @@
 package appendconcat;
 
 import "appendconcat/uuid.proto";
+import "appendconcat/name.proto";
 
 message Site {
 	required UUID id = 1;
+	optional Name name = 2;
 }

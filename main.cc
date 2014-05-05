@@ -13,6 +13,10 @@ int main() {
 	appendconcat::UUID uuid = random_uuid();
 	std::cout << uuid.Utf8DebugString() << std::endl;
 
+	appendconcat::Name name = random_name();
+	std::cout << name.Utf8DebugString() << std::endl;
+	std::cout << name_string(name) << std::endl;
+
 	State state("save.gz");
 
 	for (auto msg : state.raw_messages()) {

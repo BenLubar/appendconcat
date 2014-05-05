@@ -1,8 +1,10 @@
 package appendconcat;
 
 import "appendconcat/uuid.proto";
+import "appendconcat/name.proto";
 
 message Figure {
 	required UUID id = 1;
 	optional UUID location = 2; // -> Site.id
+	optional Name name = 3;
 }

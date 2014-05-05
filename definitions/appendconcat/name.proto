@@ -1,0 +1,109 @@
+package appendconcat;
+
+message Name {
+	enum Word {
+		GOOD       = 1;
+		EVIL       = 2;
+		LAW        = 3;
+		CHAOS      = 4;
+		NEUTRAL    = 5;
+		MAN        = 6;
+		WOMAN      = 7;
+		CHILD      = 8;
+		BROAD      = 9;
+		NARROW     = 10;
+		LONG       = 11;
+		SHORT      = 12;
+		DAGGER     = 13;
+		KNIFE      = 14;
+		SWORD      = 15;
+		HAMMER     = 16;
+		MACE       = 17;
+		FLAIL      = 18;
+		SHIELD     = 19;
+		BUCKLE     = 20;
+		HAT        = 21;
+		SHIRT      = 22;
+		PANTS      = 23;
+		GLOVE      = 24;
+		MITTEN     = 25;
+		SOCK       = 26;
+		SHOE       = 27;
+		BOOT       = 28;
+		CLOTH      = 29;
+		LEATHER    = 30;
+		HIDE       = 31;
+		SKIN       = 32;
+		COPPER     = 33;
+		TIN        = 34;
+		BRONZE     = 35;
+		IRON       = 36;
+		STEEL      = 37;
+		SILVER     = 38;
+		GOLD       = 39;
+		PLATINUM   = 40;
+		LEAD       = 41;
+		STRONG     = 42;
+		WEAK       = 43;
+		BRAIN      = 44;
+		HEART      = 45;
+		BLOOD      = 46;
+		BEING      = 47;
+		SPIRIT     = 48;
+		CATTLE     = 49;
+		HORSE      = 50;
+		PIG        = 51;
+		DOG        = 52;
+		CAT        = 53;
+		ANIMAL     = 54;
+		BIRD       = 55;
+		HAWK       = 56;
+		EAGLE      = 57;
+		DRAGON     = 58;
+		LIZARD     = 59;
+		LION       = 60;
+		TIGER      = 61;
+		SERPENT    = 62;
+		SNAKE      = 63;
+		BASILISK   = 64;
+		MOTHER     = 65;
+		FATHER     = 66;
+		DAUGHTER   = 67;
+		SON        = 68;
+		GIRL       = 69;
+		BOY        = 70;
+		ELDER      = 71;
+		YOUNG      = 72;
+		WING       = 73;
+		LEG        = 74;
+		ARM        = 75;
+		NECK       = 76;
+		TALON      = 77;
+		CLAW       = 78;
+		FINGER     = 79;
+		HEAD       = 80;
+		HAND       = 81;
+		FOOT       = 82;
+		TAIL       = 83;
+		
+		// TODO: more words
+	}
+
+	message Words {
+		enum Separator {
+			COMPOUND = 1;
+			SPACE    = 2;
+			HYPHEN   = 3;
+			COMMA    = 4;
+			THE      = 5;
+			OF       = 6;
+		}
+		optional Words prefix = 1;
+		required Word word = 2;
+		optional Separator sep = 3 [default=COMPOUND];
+	}
+
+	optional Words first = 1;
+	optional string nick = 2;
+	optional Words last  = 3;
+}
