@@ -1,0 +1,7 @@
+package appendconcat;
+
+import "appendconcat/uuid.proto";
+
+message Site {
+	required UUID id = 1;
+}

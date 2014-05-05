@@ -1,6 +1,8 @@
-CXXFLAGS += -Iproto $(shell pkg-config --cflags protobuf)
+CXXFLAGS += -Iproto $(shell pkg-config --cflags protobuf) -std=c++11
 
-objects = main.o uuid.o proto/appendconcat.pb.o proto/appendconcat/time.pb.o proto/appendconcat/uuid.pb.o
+objects = main.o util.o state.o proto/appendconcat.pb.o \
+	  proto/appendconcat/time.pb.o proto/appendconcat/uuid.pb.o \
+	  proto/appendconcat/site.pb.o proto/appendconcat/figure.pb.o
 
 all: appendconcat
 .PHONY: all
@@ -8,18 +10,18 @@ all: appendconcat
 appendconcat: $(objects)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(objects) $(shell pkg-config --libs protobuf)
 
-proto/.dummy:
+proto/.dummy: $(wildcard definitions/*.proto) $(wildcard definitions/*/*.proto)
+	rm -rf proto
 	mkdir proto
+	protoc --cpp_out=proto -I definitions definitions/*.proto definitions/*/*.proto
 	touch proto/.dummy
-
-proto/%.pb.cc proto/%.pb.h: definitions/%.proto proto/.dummy
-	protoc --cpp_out=proto -I definitions $<
 
 clean:
 	rm -f appendconcat $(objects)
 	rm -rf proto
 .PHONY: clean
 
-proto/%.pb.o: proto/%.pb.cc proto/%.pb.h
-main.o: uuid.h proto/appendconcat.pb.h proto/appendconcat/time.pb.h proto/appendconcat/uuid.pb.h
-uuid.o: uuid.h proto/appendconcat/uuid.pb.h
+proto/%.pb.cc: proto/.dummy
+main.o: util.h state.h proto/.dummy
+util.o: util.h proto/.dummy
+state.o: util.h state.h proto/.dummy

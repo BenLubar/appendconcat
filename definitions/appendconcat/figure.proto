@@ -1,0 +1,8 @@
+package appendconcat;
+
+import "appendconcat/uuid.proto";
+
+message Figure {
+	required UUID id = 1;
+	optional UUID location = 2; // -> Site.id
+}
