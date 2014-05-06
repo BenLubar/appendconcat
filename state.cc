@@ -17,16 +17,31 @@ State::State(std::string filename, bool readonly) :
 			google::protobuf::uint64 len;
 			std::string buf;
 
+			bool out_of_order = false;
+			appendconcat::Time time;
+
 			while (in.ReadVarint64(&len)) {
 				assert(in.ReadString(&buf, len));
 
 				appendconcat::Message msg;
 				assert(msg.ParseFromString(buf));
+
+				if (!out_of_order) {
+					if (time_compare(msg.time(), time)) {
+						out_of_order = true;
+					} else {
+						time = msg.time();
+					}
+				}
+
 				messages.push_back(msg);
 			}
-		}
 
-		update_caches_full();
+			if (out_of_order) {
+				std::stable_sort(messages.begin(), messages.end(), message_time_compare);
+			}
+			update_caches_full();
+		}
 	}
 
 	if (!readonly) {
@@ -51,6 +66,7 @@ void State::add(appendconcat::Message msg) {
 
 	messages.push_back(msg);
 	if (time_compare(msg.time(), current_time)) {
+		std::stable_sort(messages.begin(), messages.end(), message_time_compare);
 		update_caches_full();
 	} else {
 		update_caches_one(msg);
@@ -64,8 +80,6 @@ void State::update_caches_full() {
 	figures_cache.clear();
 	sites_cache.clear();
 	current_time.Clear();
-
-	std::stable_sort(messages.begin(), messages.end(), message_time_compare);
 
 	for (auto msg : messages) {
 		update_caches_one(msg);
