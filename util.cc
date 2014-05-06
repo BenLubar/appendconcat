@@ -4,6 +4,7 @@
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include <boost/algorithm/string.hpp> 
@@ -27,6 +28,17 @@ appendconcat::UUID random_uuid() {
 	assert(ptr == uuid.end());
 
 	return proto;
+}
+
+std::string to_string(const appendconcat::UUID & uuid) {
+	boost::uuids::uuid b;
+
+	auto ptr = static_cast<google::protobuf::uint8 *>(b.begin());
+	ptr = google::protobuf::io::CodedOutputStream::WriteLittleEndian64ToArray(uuid.high(), ptr);
+	ptr = google::protobuf::io::CodedOutputStream::WriteLittleEndian64ToArray(uuid.low(), ptr);
+	assert(ptr == b.end());
+
+	return boost::uuids::to_string(b);
 }
 
 bool time_compare(const appendconcat::Time & lhs, const appendconcat::Time & rhs) {
@@ -133,7 +145,7 @@ inline void words_string(std::string & str, const appendconcat::Name::Words & wo
 	str += appendconcat::Name::Word_Name(words.word());
 }
 
-std::string name_string(const appendconcat::Name & name) {
+std::string to_string(const appendconcat::Name & name) {
 	std::string str;
 
 	if (name.has_first()) {
@@ -156,4 +168,51 @@ std::string name_string(const appendconcat::Name & name) {
 	boost::algorithm::to_lower(str);
 
 	return str;
+}
+
+inline google::protobuf::uint32 normalized_add(google::protobuf::uint32 n, int add, int *overflow, int max) {
+	if (n != 0) {
+		n--;
+	}
+
+	if (n < -add) {
+		int m = (n - add + max - 1) / max;
+		add += max * m;
+		*overflow -= m;
+	}
+
+	n += add;
+	*overflow += n / max;
+	n %= max;
+
+	return n + 1;
+}
+
+appendconcat::Time advance_time(appendconcat::Time time, int years, int months, int days, int seconds) {
+	time.set_second(normalized_add(time.second(), seconds, &days, 24 * 60 * 60));
+	time.set_day(normalized_add(time.day(), days, &months, 28));
+	time.set_month(normalized_add(time.month(), months, &years, 12));
+	time.set_year(time.year() + years);
+	return time;
+}
+
+appendconcat::Time advance_time(appendconcat::Time time, int years, int months, int days) {
+	time = advance_time(time, years, months, days, 0);
+	time.clear_second();
+	return time;
+}
+
+appendconcat::Time advance_time(appendconcat::Time time, int years, int months) {
+	time = advance_time(time, years, months, 0, 0);
+	time.clear_second();
+	time.clear_day();
+	return time;
+}
+
+appendconcat::Time advance_time(appendconcat::Time time, int years) {
+	time = advance_time(time, years, 0, 0, 0);
+	time.clear_second();
+	time.clear_day();
+	time.clear_month();
+	return time;
 }

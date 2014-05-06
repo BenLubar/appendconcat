@@ -6,7 +6,7 @@ message Name {
 		EVIL       = 2;
 		LAW        = 3;
 		CHAOS      = 4;
-		NEUTRAL    = 5;
+		BALANCED   = 5;
 		MAN        = 6;
 		WOMAN      = 7;
 		CHILD      = 8;
@@ -85,6 +85,8 @@ message Name {
 		HAND       = 81;
 		FOOT       = 82;
 		TAIL       = 83;
+		PAW        = 84;
+		SLAYER     = 85;
 		
 		// TODO: more words
 	}

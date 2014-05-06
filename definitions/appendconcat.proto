@@ -5,7 +5,7 @@ import "appendconcat/figure.proto";
 import "appendconcat/site.proto";
 
 message Message {
-	required Time time = 1;
+	required Time   time    = 1;
 	repeated Figure figures = 2;
-	repeated Site sites = 3;
+	repeated Site   sites   = 3;
 }

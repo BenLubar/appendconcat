@@ -10,29 +10,26 @@
 int main() {
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-	appendconcat::UUID uuid = random_uuid();
-	std::cout << uuid.Utf8DebugString() << std::endl;
-
-	appendconcat::Name name = random_name();
-	std::cout << name.Utf8DebugString() << std::endl;
-	std::cout << name_string(name) << std::endl;
-
 	State state("save.gz");
+
+	for (int i = 0; i < 10; i++) {
+		appendconcat::Message msg;
+
+		*msg.mutable_time() = advance_time(state.now(), 0, 0, 1);
+
+		auto figure = msg.add_figures();
+
+		*figure->mutable_id() = random_uuid();
+		*figure->mutable_name() = random_name();
+
+		state.add(msg);
+	}
 
 	for (auto msg : state.raw_messages()) {
 		std::cout << msg.Utf8DebugString() << std::endl;
 	}
 
 	std::cout << "There are now " << state.raw_messages().size() << " messages in memory." << std::endl;
-
-	for (int i = 0; i < 10; i++) {
-		appendconcat::Message msg;
-		appendconcat::Time *time = msg.mutable_time();
-		*time = state.now();
-		time->set_year(time->year() + 1);
-
-		state.add(msg);
-	}
 
 	google::protobuf::ShutdownProtobufLibrary();
 

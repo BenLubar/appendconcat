@@ -25,6 +25,12 @@ public:
 	inline const std::vector<appendconcat::Message> & raw_messages() const {
 		return messages;
 	}
+	inline const std::unordered_map<appendconcat::UUID, appendconcat::Site, uuid_hash> & sites() const {
+		return sites_cache;
+	}
+	inline const std::unordered_map<appendconcat::UUID, appendconcat::Figure, uuid_hash> & figures() const {
+		return figures_cache;
+	}
 	inline const appendconcat::Time & now() const {
 		return current_time;
 	}
