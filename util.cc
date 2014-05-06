@@ -1,4 +1,4 @@
-#include <ctime>
+#include <chrono>
 
 #include <google/protobuf/io/coded_stream.h>
 
@@ -12,7 +12,7 @@
 
 #include "util.h"
 
-static boost::mt19937 random_number_(std::time(0));
+static boost::mt19937 random_number_(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 static boost::uuids::random_generator random_uuid_(random_number_);
 
 int random_number(int max) {
