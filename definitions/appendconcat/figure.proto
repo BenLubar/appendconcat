@@ -2,9 +2,11 @@ package appendconcat;
 
 import "appendconcat/uuid.proto";
 import "appendconcat/name.proto";
+import "appendconcat/time.proto";
 
 message Figure {
 	required UUID id = 1;
 	optional UUID location = 2; // -> Site.id
 	optional Name name = 3;
+	optional Time born = 4;
 }

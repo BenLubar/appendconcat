@@ -9,7 +9,7 @@ all: appendconcat
 .PHONY: all
 
 appendconcat: $(objects)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $(objects) $(shell pkg-config --libs protobuf)
+	$(CXX) $(objects) -o $@ $(CXXFLAGS) $(LDFLAGS) $(shell pkg-config --libs protobuf)
 
 proto/.dummy: $(wildcard definitions/*.proto) $(wildcard definitions/*/*.proto)
 	rm -rf proto

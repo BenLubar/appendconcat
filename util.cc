@@ -171,21 +171,17 @@ std::string to_string(const appendconcat::Name & name) {
 }
 
 inline google::protobuf::uint32 normalized_add(google::protobuf::uint32 n, int add, int *overflow, int max) {
-	if (n != 0) {
-		n--;
+	google::protobuf::int64 n_ = n ? n - 1 : 0;
+
+	n_ += add;
+	*overflow += n_ / max;
+	n_ %= max;
+	if (n_ < 0) {
+		n_ += max;
+		*overflow--;
 	}
 
-	if (n < -add) {
-		int m = (n - add + max - 1) / max;
-		add += max * m;
-		*overflow -= m;
-	}
-
-	n += add;
-	*overflow += n / max;
-	n %= max;
-
-	return n + 1;
+	return n_ + 1;
 }
 
 appendconcat::Time advance_time(appendconcat::Time time, int years, int months, int days, int seconds) {
@@ -215,4 +211,10 @@ appendconcat::Time advance_time(appendconcat::Time time, int years) {
 	time.clear_day();
 	time.clear_month();
 	return time;
+}
+
+static boost::random::uniform_int_distribution<> random_time_dist(1, 28 * 12 * 10);
+
+appendconcat::Time advance_time_random(appendconcat::Time time) {
+	return advance_time(time, 0, 0, random_time_dist(random_number_));
 }
