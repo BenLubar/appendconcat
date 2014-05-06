@@ -92,18 +92,22 @@ int main(int argc, const char **argv) {
 		for (auto site : msg.sites()) {
 			auto now = state.sites().at(site.id());
 
-			if (site.has_name()) {
-				std::cout << timestamp << ", " << to_string(now.name()) << " was named " << to_string(site.name()) << "." << std::endl;
-			}
+			std::cout << timestamp << ", " << to_string(now.name()) << " was";
 
 			if (site.has_type()) {
-				std::cout << timestamp << ", " << to_string(now.name()) << " became a " << to_string(site.type());
-				if (site.has_parent()) {
-					auto parent = state.sites().at(site.parent());
-					std::cout << " in " << to_string(parent.name());
-				}
-				std::cout << "." << std::endl;
+				std::cout << " a " << to_string(site.type());
 			}
+
+			if (site.has_name()) {
+				std::cout << " named " << to_string(site.name());
+			}
+
+			if (site.has_parent()) {
+				auto parent = state.sites().at(site.parent());
+				std::cout << " in " << to_string(parent.name());
+			}
+
+			std::cout << "." << std::endl;
 		}
 
 		for (auto fig : msg.figures()) {
