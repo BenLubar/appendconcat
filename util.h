@@ -32,7 +32,7 @@ appendconcat::Time advance_time_random(appendconcat::Time);
 
 struct uuid_hash {
 	inline size_t operator()(const appendconcat::UUID & uuid) const {
-		return reinterpret_cast<size_t>(uuid.high() ^ uuid.low());
+		return std::hash<google::protobuf::uint64>()(uuid.high() ^ uuid.low());
 	}
 };
 
