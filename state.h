@@ -16,10 +16,10 @@ public:
 	inline const std::vector<appendconcat::Message> & raw_messages() const {
 		return messages;
 	}
-	inline const std::unordered_map<appendconcat::UUID, appendconcat::Site, uuid_hash> & sites() const {
+	inline const std::unordered_map<appendconcat::UUID, appendconcat::Site> & sites() const {
 		return sites_cache;
 	}
-	inline const std::unordered_map<appendconcat::UUID, appendconcat::Figure, uuid_hash> & figures() const {
+	inline const std::unordered_map<appendconcat::UUID, appendconcat::Figure> & figures() const {
 		return figures_cache;
 	}
 	inline const appendconcat::Time & now() const {
@@ -31,9 +31,9 @@ public:
 
 private:
 	std::vector<appendconcat::Message> messages;
-	std::unordered_map<appendconcat::UUID, appendconcat::Site, uuid_hash> sites_cache;
-	std::unordered_map<appendconcat::UUID, appendconcat::Figure, uuid_hash> figures_cache;
-	std::unordered_map<appendconcat::UUID, std::unordered_set<appendconcat::UUID, uuid_hash>, uuid_hash> sites_by_parent;
+	std::unordered_map<appendconcat::UUID, appendconcat::Site> sites_cache;
+	std::unordered_map<appendconcat::UUID, appendconcat::Figure> figures_cache;
+	std::unordered_map<appendconcat::UUID, std::unordered_set<appendconcat::UUID> > sites_by_parent;
 	appendconcat::Time current_time;
 
 	void update_caches_full();

@@ -6,12 +6,21 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <boost/random/mersenne_twister.hpp>
+#include <boost/random/uniform_int_distribution.hpp>
+
 #include "appendconcat.pb.h"
 
 bool time_compare(const appendconcat::Time &, const appendconcat::Time &);
 bool message_time_compare(const appendconcat::Message &, const appendconcat::Message &);
 
-int random_number(int);
+extern boost::mt19937 random_number_;
+
+template <typename IntType>
+inline IntType random_number(IntType max) {
+	return boost::random::uniform_int_distribution<IntType>(0, max - 1)(random_number_);
+}
+
 appendconcat::UUID random_uuid();
 appendconcat::Name::Word random_word();
 appendconcat::Name random_name_figure();
@@ -30,16 +39,20 @@ appendconcat::Time advance_time(appendconcat::Time, int);
 // one day to ten years
 appendconcat::Time advance_time_random(appendconcat::Time);
 
-struct uuid_hash {
-	inline size_t operator()(const appendconcat::UUID & uuid) const {
-		return std::hash<google::protobuf::uint64>()(uuid.high() ^ uuid.low());
-	}
-};
-
 namespace std {
-	inline bool operator==(const appendconcat::UUID & lhs, const appendconcat::UUID & rhs) {
-		return lhs.high() == rhs.high() && lhs.low() == rhs.low();
-	}
+	template <>
+	struct hash<appendconcat::UUID> {
+		inline size_t operator()(const appendconcat::UUID & uuid) const {
+			return std::hash<google::protobuf::uint64>()(uuid.high() ^ uuid.low());
+		}
+	};
+
+	template <>
+	struct equal_to<appendconcat::UUID> {
+		inline bool operator()(const appendconcat::UUID & lhs, const appendconcat::UUID & rhs) const {
+			return lhs.high() == rhs.high() && lhs.low() == rhs.low();
+		}
+	};
 }
 
 #endif

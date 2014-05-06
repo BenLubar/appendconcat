@@ -5,19 +5,13 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include <boost/random/mersenne_twister.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
 #include <boost/random/discrete_distribution.hpp>
 #include <boost/algorithm/string.hpp> 
 
 #include "util.h"
 
-static boost::mt19937 random_number_(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 static boost::uuids::random_generator random_uuid_(random_number_);
-
-int random_number(int max) {
-	return boost::random::uniform_int_distribution<>(0, max - 1)(random_number_);
-}
+boost::mt19937 random_number_(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 
 appendconcat::UUID random_uuid() {
 	appendconcat::UUID proto;
@@ -163,7 +157,7 @@ static boost::random::discrete_distribution<> site_name_dist{
 
 static boost::random::uniform_int_distribution<> bool_dist(0, 1);
 
-appendconcat::Name random_name_site(appendconcat::Site::Type type) {
+appendconcat::Name random_name_site(appendconcat::Site::Type /*type*/) {
 	appendconcat::Name name;
 	appendconcat::Name::Words *w = name.mutable_first();
 	// TODO: for now, all types of sites are named using the same algorithm.
@@ -376,7 +370,7 @@ inline google::protobuf::uint32 normalized_add(google::protobuf::uint32 n, int a
 	n_ %= max;
 	if (n_ < 0) {
 		n_ += max;
-		*overflow--;
+		--*overflow;
 	}
 
 	return n_ + 1;

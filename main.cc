@@ -59,7 +59,7 @@ int main(int argc, const char **argv) {
 			*figure->mutable_name() = random_name_figure();
 			*figure->mutable_born() = time;
 
-			int i = random_number(sites.size() + 4);
+			size_t i = random_number(sites.size() + 4);
 			if (i < sites.size()) {
 				*figure->mutable_location() = sites[i];
 			} else {
