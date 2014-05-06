@@ -5,6 +5,7 @@ import "appendconcat/name.proto";
 
 message Site {
 	enum Type {
+		REGION   = 0;
 		TOWN     = 1;
 		HOUSE    = 2;
 		ROAD     = 3;

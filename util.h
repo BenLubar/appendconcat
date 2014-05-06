@@ -2,12 +2,11 @@
 #define APPENDCONCAT_INCLUDED_UTIL_H
 
 #include <string>
+#include <vector>
+#include <unordered_map>
+#include <unordered_set>
 
 #include "appendconcat.pb.h"
-#include "appendconcat/uuid.pb.h"
-#include "appendconcat/time.pb.h"
-#include "appendconcat/name.pb.h"
-#include "appendconcat/site.pb.h"
 
 bool time_compare(const appendconcat::Time &, const appendconcat::Time &);
 bool message_time_compare(const appendconcat::Message &, const appendconcat::Message &);
@@ -20,6 +19,8 @@ appendconcat::Name random_name_site(appendconcat::Site::Type);
 
 std::string to_string(const appendconcat::UUID &);
 std::string to_string(const appendconcat::Name &);
+std::string to_string(const appendconcat::Time &);
+std::string to_string(appendconcat::Site::Type);
 
 appendconcat::Time advance_time(appendconcat::Time, int, int, int, int);
 appendconcat::Time advance_time(appendconcat::Time, int, int, int);

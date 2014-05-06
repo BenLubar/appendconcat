@@ -5,17 +5,7 @@
 #include <google/protobuf/io/gzip_stream.h>
 #include <google/protobuf/io/coded_stream.h>
 
-#include <vector>
-#include <string>
-#include <unordered_map>
-#include <unordered_set>
-
 #include "util.h"
-#include "appendconcat.pb.h"
-#include "appendconcat/uuid.pb.h"
-#include "appendconcat/figure.pb.h"
-#include "appendconcat/site.pb.h"
-#include "appendconcat/time.pb.h"
 
 class State {
 public:
@@ -34,6 +24,9 @@ public:
 	}
 	inline const appendconcat::Time & now() const {
 		return current_time;
+	}
+	inline bool read_only() const {
+		return out == NULL;
 	}
 
 private:

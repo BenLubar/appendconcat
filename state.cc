@@ -1,7 +1,7 @@
 #include <fcntl.h>
 
-#include "state.h"
 #include "util.h"
+#include "state.h"
 
 State::State(std::string filename, bool readonly) :
 	messages(), sites_cache(), figures_cache(), sites_by_parent(),
@@ -47,7 +47,7 @@ State::~State() {
 }
 
 void State::add(appendconcat::Message msg) {
-	assert(out);
+	assert(!read_only());
 
 	messages.push_back(msg);
 	if (time_compare(msg.time(), current_time)) {

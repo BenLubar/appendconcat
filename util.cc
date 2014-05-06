@@ -46,6 +46,37 @@ std::string to_string(const appendconcat::UUID & uuid) {
 	return boost::uuids::to_string(b);
 }
 
+static std::vector<std::string> month_names{
+	"early spring", "mid-spring", "late spring",
+	"early summer", "mid-summer", "late summer",
+	"early autumn", "mid-autumn", "late autumn",
+	"early winter", "mid-winter", "late winter"
+};
+
+static std::vector<std::string> day_names{
+	"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth",
+	"tenth", "eleventh", "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth",
+	"seventeenth", "eighteenth", "nineteenth", "twentieth", "twenty first", "twenty second",
+	"twenty third", "twenty fourth", "twenty fifth", "twenty sixth", "twenty seventh",
+	"twenty eighth"
+};
+
+std::string to_string(const appendconcat::Time & time) {
+	if (time.has_year()) {
+		if (time.year() < 0) {
+			return "before recorded history";
+		}
+		if (time.has_month()) {
+			if (time.has_day()) {
+				return "on the " + day_names[time.day() - 1] + " day of " + month_names[time.month() - 1] + " in " + std::to_string(time.year());
+			}
+			return "during " + month_names[time.month() - 1] + " in " + std::to_string(time.year());
+		}
+		return "in " + std::to_string(time.year());
+	}
+	return "at an unknown time";
+}
+
 bool time_compare(const appendconcat::Time & lhs, const appendconcat::Time & rhs) {
 	if (!lhs.has_year() && rhs.has_year()) {
 		return true;
@@ -384,4 +415,8 @@ static boost::random::uniform_int_distribution<> random_time_dist(1, 28 * 12 * 1
 
 appendconcat::Time advance_time_random(appendconcat::Time time) {
 	return advance_time(time, 0, 0, random_time_dist(random_number_));
+}
+
+std::string to_string(appendconcat::Site::Type type) {
+	return boost::algorithm::to_lower_copy(appendconcat::Site::Type_Name(type));
 }
