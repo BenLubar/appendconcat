@@ -4,23 +4,26 @@
 #include "util.h"
 
 State::State(std::string filename, bool readonly) :
-	messages(), sites_cache(), figures_cache(), fout(NULL), gout(NULL), out(NULL) {
+	messages(), sites_cache(), figures_cache(), sites_by_parent(),
+	fout(NULL), gout(NULL), out(NULL) {
 	{
 		int fd_in = open(filename.c_str(), O_RDONLY);
-		google::protobuf::io::FileInputStream fin(fd_in);
-		fin.SetCloseOnDelete(true);
-		google::protobuf::io::GzipInputStream gin(&fin);
-		google::protobuf::io::CodedInputStream in(&gin);
+		if (fd_in >= 0) {
+			google::protobuf::io::FileInputStream fin(fd_in);
+			fin.SetCloseOnDelete(true);
+			google::protobuf::io::GzipInputStream gin(&fin);
+			google::protobuf::io::CodedInputStream in(&gin);
 
-		google::protobuf::uint64 len;
-		std::string buf;
+			google::protobuf::uint64 len;
+			std::string buf;
 
-		while (in.ReadVarint64(&len)) {
-			assert(in.ReadString(&buf, len));
+			while (in.ReadVarint64(&len)) {
+				assert(in.ReadString(&buf, len));
 
-			appendconcat::Message msg;
-			assert(msg.ParseFromString(buf));
-			messages.push_back(msg);
+				appendconcat::Message msg;
+				assert(msg.ParseFromString(buf));
+				messages.push_back(msg);
+			}
 		}
 
 		update_caches_full();
@@ -74,7 +77,14 @@ inline void State::update_caches_one(appendconcat::Message msg) {
 		figures_cache[fig.id()].MergeFrom(fig);
 	}
 	for (auto site : msg.sites()) {
-		sites_cache[site.id()].MergeFrom(site);
+		auto & cache = sites_cache[site.id()];
+		if (site.has_parent()) {
+			if (cache.has_parent()) {
+				sites_by_parent[cache.parent()].erase(cache.id());
+			}
+			sites_by_parent[site.parent()].insert(site.id());
+		}
+		cache.MergeFrom(site);
 	}
 	current_time.CopyFrom(msg.time());
 }

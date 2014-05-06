@@ -4,6 +4,18 @@ import "appendconcat/uuid.proto";
 import "appendconcat/name.proto";
 
 message Site {
-	required UUID id = 1;
-	optional Name name = 2;
+	enum Type {
+		TOWN     = 1;
+		HOUSE    = 2;
+		ROAD     = 3;
+		FORTRESS = 4;
+		TOMB     = 5;
+		LAIR     = 6;
+		CAMP     = 7;
+	}
+
+	required UUID id     = 1;
+	optional Name name   = 2;
+	optional UUID parent = 3; // -> Site.id
+	optional Type type   = 4;
 }

@@ -7,13 +7,16 @@
 #include "appendconcat/uuid.pb.h"
 #include "appendconcat/time.pb.h"
 #include "appendconcat/name.pb.h"
+#include "appendconcat/site.pb.h"
 
 bool time_compare(const appendconcat::Time &, const appendconcat::Time &);
 bool message_time_compare(const appendconcat::Message &, const appendconcat::Message &);
 
+int random_number(int);
 appendconcat::UUID random_uuid();
 appendconcat::Name::Word random_word();
-appendconcat::Name random_name();
+appendconcat::Name random_name_figure();
+appendconcat::Name random_name_site(appendconcat::Site::Type);
 
 std::string to_string(const appendconcat::UUID &);
 std::string to_string(const appendconcat::Name &);

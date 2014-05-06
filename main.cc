@@ -18,6 +18,8 @@ int main() {
 		time.set_year(-300);
 		time = advance_time_random(time);
 
+		std::vector<appendconcat::UUID> sites;
+
 		while (time.year() < 0) {
 			appendconcat::Message msg;
 
@@ -26,12 +28,25 @@ int main() {
 			auto figure = msg.add_figures();
 
 			*figure->mutable_id() = random_uuid();
-			*figure->mutable_name() = random_name();
+			*figure->mutable_name() = random_name_figure();
 			*figure->mutable_born() = time;
 
-			time = advance_time_random(time);
+			int i = random_number(sites.size() + 4);
+			if (i < sites.size()) {
+				*figure->mutable_location() = sites[i];
+			} else {
+				auto site = msg.add_sites();
+				*site->mutable_id() = random_uuid();
+				site->set_type(appendconcat::Site::TOWN);
+				*site->mutable_name() = random_name_site(site->type());
+
+				sites.push_back(site->id());
+				*figure->mutable_location() = site->id();
+			}
 
 			state.add(msg);
+
+			time = advance_time_random(time);
 		}
 
 		{

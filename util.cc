@@ -7,12 +7,17 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
+#include <boost/random/discrete_distribution.hpp>
 #include <boost/algorithm/string.hpp> 
 
 #include "util.h"
 
 static boost::mt19937 random_number_(std::time(0));
 static boost::uuids::random_generator random_uuid_(random_number_);
+
+int random_number(int max) {
+	return boost::random::uniform_int_distribution<>(0, max - 1)(random_number_);
+}
 
 appendconcat::UUID random_uuid() {
 	appendconcat::UUID proto;
@@ -102,7 +107,7 @@ appendconcat::Name::Word random_word() {
 	return word;
 }
 
-appendconcat::Name random_name() {
+appendconcat::Name random_name_figure() {
 	appendconcat::Name name;
 	appendconcat::Name::Words *a = name.mutable_first();
 	appendconcat::Name::Words *c = name.mutable_last();
@@ -111,6 +116,166 @@ appendconcat::Name random_name() {
 	b->set_word(random_word());
 	c->set_sep(appendconcat::Name::Words::COMPOUND);
 	c->set_word(random_word());
+	return name;
+}
+
+static boost::random::discrete_distribution<> site_name_dist{
+	30, // 0 - w{2}
+	20, // 1 - w{1,2}-w{1,2}
+	10, // 2 - w{1,2} of w{1,2}
+	8,  // 3 - w{1,2} w{1,2}
+	3,  // 4 - w{2} the w{1,2} of w{1,2}
+	2,  // 5 - w{2} the w{1,2} of w-w
+	2,  // 6 - w{2} the w-w of w{1,2}
+	1,  // 7 - w{2} the w-w of w-w
+};
+
+static boost::random::uniform_int_distribution<> bool_dist(0, 1);
+
+appendconcat::Name random_name_site(appendconcat::Site::Type type) {
+	appendconcat::Name name;
+	appendconcat::Name::Words *w = name.mutable_first();
+	// TODO: for now, all types of sites are named using the same algorithm.
+	switch (site_name_dist(random_number_)) {
+	case 0:
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::COMPOUND);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		break;
+	case 1:
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::HYPHEN);
+		w = w->mutable_prefix();
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		break;
+	case 2:
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::OF);
+		w = w->mutable_prefix();
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		break;
+	case 3:
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::SPACE);
+		w = w->mutable_prefix();
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		break;
+	case 4:
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::OF);
+		w = w->mutable_prefix();
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::THE);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::COMPOUND);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		break;
+	case 5:
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::HYPHEN);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::OF);
+		w = w->mutable_prefix();
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::THE);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::COMPOUND);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::COMPOUND);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		break;
+	case 6:
+		if (bool_dist(random_number_)) {
+			w->set_word(random_word());
+			w->set_sep(appendconcat::Name::Words::COMPOUND);
+			w = w->mutable_prefix();
+		}
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::OF);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::HYPHEN);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::THE);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::COMPOUND);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		break;
+	case 7:
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::HYPHEN);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::OF);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::HYPHEN);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::THE);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		w->set_sep(appendconcat::Name::Words::COMPOUND);
+		w = w->mutable_prefix();
+		w->set_word(random_word());
+		break;
+	}
 	return name;
 }
 
@@ -140,6 +305,8 @@ inline void words_string(std::string & str, const appendconcat::Name::Words & wo
 	case appendconcat::Name::Words::OF:
 		str += " of ";
 		break;
+	default:
+		assert(false);
 	}
 
 	str += appendconcat::Name::Word_Name(words.word());

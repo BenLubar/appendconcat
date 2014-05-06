@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "util.h"
 #include "appendconcat.pb.h"
@@ -36,9 +37,10 @@ public:
 	}
 
 private:
-	std::vector<appendconcat::Message>                                      messages;
-	std::unordered_map<appendconcat::UUID, appendconcat::Site, uuid_hash>   sites_cache;
+	std::vector<appendconcat::Message> messages;
+	std::unordered_map<appendconcat::UUID, appendconcat::Site, uuid_hash> sites_cache;
 	std::unordered_map<appendconcat::UUID, appendconcat::Figure, uuid_hash> figures_cache;
+	std::unordered_map<appendconcat::UUID, std::unordered_set<appendconcat::UUID, uuid_hash>, uuid_hash> sites_by_parent;
 	appendconcat::Time current_time;
 
 	void update_caches_full();
