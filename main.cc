@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include <boost/program_options.hpp>
+#include <boost/graph/graphviz.hpp>
 
 #include "util.h"
 #include "state.h"
@@ -14,7 +15,8 @@ int main(int argc, const char **argv) {
 		("help,h", "this help message")
 		("save-name,o", boost::program_options::value<std::string>()->default_value("save.gz")->value_name("file"), "save file name")
 		("read-only,r", boost::program_options::bool_switch(), "do not allow modification of the save file")
-		("start-history", boost::program_options::value<google::protobuf::int64>()->default_value(-300)->value_name("year"), "the earliest year in history for new games");
+		("start-history", boost::program_options::value<google::protobuf::int64>()->default_value(-300)->value_name("year"), "the earliest year in history for new games")
+		("graphviz", "print a graphviz chart of sites in DOT format");
 
 	boost::program_options::variables_map opts;
 	boost::program_options::store(boost::program_options::parse_command_line(argc, argv, opt_desc), opts);
@@ -124,6 +126,12 @@ int main(int argc, const char **argv) {
 			state.add(msg);
 		}
 	}
+
+	if (opts.count("graphviz")) {
+		boost::write_graphviz(std::cout, state.site_graph(), boost::make_label_writer(boost::get(boost::vertex_name, state.site_graph())), boost::make_label_writer(boost::get(boost::edge_weight, state.site_graph())));
+		return 0;
+	}
+
 
 	for (auto msg : state.raw_messages()) {
 		std::string timestamp = to_string(msg.time());

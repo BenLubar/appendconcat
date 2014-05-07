@@ -139,7 +139,7 @@ inline void State::update_caches_one(appendconcat::Message msg) {
 			sites_by_parent[site.parent()].insert(site.id());
 		}
 		if (!site_to_vertex.count(site.id())) {
-			site_to_vertex[site.id()] = boost::add_vertex(sites_by_distance);
+			site_to_vertex[site.id()] = boost::add_vertex(to_string(site.name()) + " (" + to_string(site.type()) + ")", sites_by_distance);
 			vertex_to_site[site_to_vertex[site.id()]] = site.id();
 		}
 		for (auto near : site.nearby()) {
