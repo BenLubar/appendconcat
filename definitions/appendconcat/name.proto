@@ -87,6 +87,44 @@ message Name {
 		TAIL       = 83;
 		PAW        = 84;
 		SLAYER     = 85;
+		AXE        = 86;
+		HERO       = 87;
+		DEFEND     = 88;
+		ANCIENT    = 89;
+		MARKET     = 90;
+		ELF        = 91;
+		DROW       = 92;
+		HUMAN      = 93;
+		FAIRY      = 94;
+		DWARF      = 95;
+		PIXIE      = 96;
+		GIANT      = 97;
+		GOBLIN     = 98;
+		KOBOLD     = 99;
+		OGRE       = 100;
+		WARRIOR    = 101;
+		WIZARD     = 102;
+		MAGIC      = 103;
+		WITCH      = 104;
+		STAFF      = 105;
+		WAND       = 106;
+		WARD       = 107;
+		BOOK       = 108;
+		GUARD      = 109;
+		RANGER     = 110;
+		HUNT       = 111;
+		ARCHERY    = 112;
+		CHEF       = 113;
+		ALE        = 114;
+		BAR        = 115;
+		LOW        = 116;
+		HIGH       = 117;
+		SHALLOW    = 118;
+		DEEP       = 119;
+		ARROW      = 120;
+		BOW        = 121;
+		BOLT       = 122;
+		CROSS      = 123;
 		
 		// TODO: more words
 	}
