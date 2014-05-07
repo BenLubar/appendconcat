@@ -1,6 +1,8 @@
 appendconcat
 ============
 
+[![Build Status](https://drone.io/github.com/BenLubar/appendconcat/status.png)](https://drone.io/github.com/BenLubar/appendconcat/latest)
+
 Ok, so here's the plan:
 
 1. When you play this game, there is randomly generated stuff.
