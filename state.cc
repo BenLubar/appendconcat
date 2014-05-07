@@ -54,6 +54,38 @@ State::State(std::string filename, bool readonly) :
 		fout->SetCloseOnDelete(true);
 		gout = new google::protobuf::io::GzipOutputStream(fout);
 		out = new google::protobuf::io::CodedOutputStream(gout);
+
+		bool change = false;
+		appendconcat::Message msg;
+		for (auto site : sites_cache) {
+			// connect disconnected regions
+			if (site.second.type() == appendconcat::Site::REGION && !site.second.has_parent()) {
+				auto paths = find_site_paths(site.first);
+
+				for (auto path : paths) {
+					auto site_b = sites_cache.at(path.first);
+					if (site_b.type() == appendconcat::Site::REGION && !site_b.has_parent() && path.second.first == std::numeric_limits<google::protobuf::int64>::max()) {
+						change = true;
+						auto msg_site = msg.add_sites();
+						*msg_site->mutable_id() = site.first;
+						auto msg_near = msg_site->add_nearby();
+						*msg_near->mutable_site() = path.first;
+						auto msg_time = msg_near->mutable_distance();
+						msg_time->set_year(random_number(20));
+						if (msg_time->year() == 0) {
+							msg_time->set_month(random_number(10) + 2);
+						} else {
+							msg_time->set_month(random_number(12));
+						}
+					}
+				}
+			}
+		}
+
+		if (change) {
+			*msg.mutable_time() = current_time;
+			add(msg);
+		}
 	}
 }
 
