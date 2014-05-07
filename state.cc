@@ -1,5 +1,7 @@
 #include <fcntl.h>
 
+#include <algorithm>
+
 #include "util.h"
 #include "state.h"
 
