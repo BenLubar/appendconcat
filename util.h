@@ -31,6 +31,8 @@ std::string to_string(const appendconcat::Name &);
 std::string to_string(const appendconcat::Time &);
 std::string to_string(appendconcat::Site::Type);
 
+google::protobuf::int64 time_as_duration(const appendconcat::Time &);
+
 appendconcat::Time advance_time(appendconcat::Time, int, int, int, int);
 appendconcat::Time advance_time(appendconcat::Time, int, int, int);
 appendconcat::Time advance_time(appendconcat::Time, int, int);

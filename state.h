@@ -5,6 +5,8 @@
 #include <google/protobuf/io/gzip_stream.h>
 #include <google/protobuf/io/coded_stream.h>
 
+#include <boost/graph/directed_graph.hpp>
+
 #include "util.h"
 
 class State {
@@ -34,6 +36,8 @@ private:
 	std::unordered_map<appendconcat::UUID, appendconcat::Site> sites_cache;
 	std::unordered_map<appendconcat::UUID, appendconcat::Figure> figures_cache;
 	std::unordered_map<appendconcat::UUID, std::unordered_set<appendconcat::UUID> > sites_by_parent;
+	boost::directed_graph<appendconcat::UUID, google::protobuf::int64> sites_by_distance;
+	std::unordered_map<appendconcat::UUID, boost::directed_graph<>::vertex_descriptor> site_to_vertex;
 	appendconcat::Time current_time;
 
 	void update_caches_full();

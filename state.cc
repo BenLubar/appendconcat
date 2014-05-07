@@ -6,8 +6,8 @@
 #include "state.h"
 
 State::State(std::string filename, bool readonly) :
-	messages(), sites_cache(), figures_cache(), sites_by_parent(),
-	fout(NULL), gout(NULL), out(NULL) {
+	messages(), sites_cache(), figures_cache(), sites_by_parent(), sites_by_distance(),
+	site_to_vertex(), fout(NULL), gout(NULL), out(NULL) {
 	{
 		int fd_in = open(filename.c_str(), O_RDONLY);
 		if (fd_in >= 0) {
@@ -81,6 +81,9 @@ void State::add(appendconcat::Message msg) {
 void State::update_caches_full() {
 	figures_cache.clear();
 	sites_cache.clear();
+	sites_by_parent.clear();
+	sites_by_distance.clear();
+	site_to_vertex.clear();
 	current_time.Clear();
 
 	for (auto msg : messages) {
@@ -99,6 +102,16 @@ inline void State::update_caches_one(appendconcat::Message msg) {
 				sites_by_parent[cache.parent()].erase(cache.id());
 			}
 			sites_by_parent[site.parent()].insert(site.id());
+		}
+		if (!site_to_vertex.count(site.id())) {
+			site_to_vertex[site.id()] = sites_by_distance.add_vertex(site.id());
+		}
+		for (auto near : site.nearby()) {
+			sites_by_distance.remove_edge(site_to_vertex[site.id()], site_to_vertex[near.site()]);
+			if (near.has_distance()) {
+				sites_by_distance.add_edge(site_to_vertex[site.id()], site_to_vertex[near.site()], time_as_duration(near.distance()));
+			}
+
 		}
 		cache.MergeFrom(site);
 	}

@@ -5,8 +5,15 @@ import "appendconcat/name.proto";
 import "appendconcat/time.proto";
 
 message Figure {
-	required UUID id = 1;
+	enum Race {
+		HUMAN = 0;
+	}
+
+	required UUID id       = 1;
 	optional UUID location = 2; // -> Site.id
-	optional Name name = 3;
-	optional Time born = 4;
+	optional Name name     = 3;
+	optional Time born     = 4;
+	optional Race race     = 5;
+	optional UUID parent   = 6; // -> Figure.id
+	optional UUID spouse   = 7; // -> Figure.id
 }

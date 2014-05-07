@@ -414,3 +414,7 @@ appendconcat::Time advance_time_random(appendconcat::Time time) {
 std::string to_string(appendconcat::Site::Type type) {
 	return boost::algorithm::to_lower_copy(appendconcat::Site::Type_Name(type));
 }
+
+google::protobuf::int64 time_as_duration(const appendconcat::Time &time) {
+	return ((time.year() * 12 + time.month()) * 28 + time.day()) * 24 * 60 * 60 + time.second();
+}

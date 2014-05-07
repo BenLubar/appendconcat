@@ -1,4 +1,4 @@
-CXXFLAGS += -Iproto $(shell pkg-config --cflags protobuf) -std=c++11 -ggdb -Wall -Wextra
+CXXFLAGS += -Iproto $(shell pkg-config --cflags protobuf) -std=c++11 -ggdb -Wall -Wextra -O2 -pedantic -Dickweed
 
 proto   = proto/appendconcat.pb.o proto/appendconcat/time.pb.o \
 	  proto/appendconcat/uuid.pb.o proto/appendconcat/site.pb.o \
