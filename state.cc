@@ -2,6 +2,8 @@
 
 #include <algorithm>
 
+#include <boost/graph/dijkstra_shortest_paths.hpp>
+
 #include "util.h"
 #include "state.h"
 
@@ -84,6 +86,7 @@ void State::update_caches_full() {
 	sites_by_parent.clear();
 	sites_by_distance.clear();
 	site_to_vertex.clear();
+	vertex_to_site.clear();
 	current_time.Clear();
 
 	for (auto msg : messages) {
@@ -104,16 +107,37 @@ inline void State::update_caches_one(appendconcat::Message msg) {
 			sites_by_parent[site.parent()].insert(site.id());
 		}
 		if (!site_to_vertex.count(site.id())) {
-			site_to_vertex[site.id()] = sites_by_distance.add_vertex(site.id());
+			site_to_vertex[site.id()] = boost::add_vertex(sites_by_distance);
+			vertex_to_site[site_to_vertex[site.id()]] = site.id();
 		}
 		for (auto near : site.nearby()) {
-			sites_by_distance.remove_edge(site_to_vertex[site.id()], site_to_vertex[near.site()]);
+			boost::remove_edge(site_to_vertex[site.id()], site_to_vertex[near.site()], sites_by_distance);
 			if (near.has_distance()) {
-				sites_by_distance.add_edge(site_to_vertex[site.id()], site_to_vertex[near.site()], time_as_duration(near.distance()));
+				boost::add_edge(site_to_vertex[site.id()], site_to_vertex[near.site()], time_as_duration(near.distance()), sites_by_distance);
 			}
 
 		}
 		cache.MergeFrom(site);
 	}
 	current_time.CopyFrom(msg.time());
+}
+
+std::unordered_map<appendconcat::UUID, std::pair<google::protobuf::int64, appendconcat::UUID> > State::find_site_paths(const appendconcat::UUID & id) const {
+	auto n = boost::num_vertices(sites_by_distance);
+
+	std::vector<boost::graph_traits<graph_t>::vertex_descriptor> predecessor(n);
+	std::vector<google::protobuf::int64>                         distance(n);
+
+	boost::dijkstra_shortest_paths(sites_by_distance, site_to_vertex.at(id),
+			boost::predecessor_map(boost::make_iterator_property_map(predecessor.begin(), get(boost::vertex_index, sites_by_distance))).
+			distance_map(boost::make_iterator_property_map(distance.begin(), get(boost::vertex_index, sites_by_distance))));
+
+	std::unordered_map<appendconcat::UUID, std::pair<google::protobuf::int64, appendconcat::UUID> > result;
+
+	boost::graph_traits<graph_t>::vertex_iterator vi, vend;
+	for (tie(vi, vend) = boost::vertices(sites_by_distance); vi != vend; ++vi) {
+		result[vertex_to_site.at(*vi)] = std::pair<google::protobuf::int64, appendconcat::UUID>(distance[*vi], vertex_to_site.at(predecessor[*vi]));
+	}
+
+	return result;
 }

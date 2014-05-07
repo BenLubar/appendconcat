@@ -99,11 +99,7 @@ int main(int argc, const char **argv) {
 					auto site_distance_from = site_near_from->mutable_distance();
 					site_distance_from->set_year(0);
 					site_distance_from->set_month(random_number(3));
-					if (site_distance_from->month()) {
-						site_distance_from->set_day(random_number(28));
-					} else {
-						site_distance_from->set_day(random_number(27) + 1);
-					}
+					site_distance_from->set_day(random_number(28));
 					site_distance_from->set_second(random_number(24 * 60 * 60));
 
 					auto site_near_to = site->add_nearby();
@@ -111,11 +107,7 @@ int main(int argc, const char **argv) {
 					auto site_distance_to = site_near_to->mutable_distance();
 					site_distance_to->set_year(0);
 					site_distance_to->set_month(random_number(3));
-					if (site_distance_to->month()) {
-						site_distance_to->set_day(random_number(28));
-					} else {
-						site_distance_to->set_day(random_number(27) + 1);
-					}
+					site_distance_to->set_day(random_number(28));
 					site_distance_to->set_second(random_number(24 * 60 * 60));
 				}
 			}
@@ -202,8 +194,6 @@ int main(int argc, const char **argv) {
 			}
 		}
 	}
-
-	std::cout << "There are now " << state.raw_messages().size() << " messages in memory." << std::endl;
 
 	google::protobuf::ShutdownProtobufLibrary();
 
