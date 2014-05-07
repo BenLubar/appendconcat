@@ -14,6 +14,6 @@ message Figure {
 	optional Name name     = 3;
 	optional Time born     = 4;
 	optional Race race     = 5;
-	optional UUID parent   = 6; // -> Figure.id
-	optional UUID spouse   = 7; // -> Figure.id
+	repeated UUID parent   = 6; // -> Figure.id
+	repeated UUID spouse   = 7; // -> Figure.id
 }
