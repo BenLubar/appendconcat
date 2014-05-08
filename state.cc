@@ -8,8 +8,9 @@
 #include "state.h"
 
 State::State(std::string filename, bool readonly) :
-	messages(), sites_cache(), figures_cache(), sites_by_parent(), sites_by_distance(),
-	sites_by_type(), site_to_vertex(), fout(NULL), gout(NULL), out(NULL) {
+	messages(), sites_cache(), figures_cache(), sites_by_parent(), sites_by_type(),
+	sites_by_distance(), site_to_vertex(), vertex_to_site(),
+	fout(NULL), gout(NULL), out(NULL) {
 	{
 		int fd_in = open(filename.c_str(), O_RDONLY);
 		if (fd_in >= 0) {
