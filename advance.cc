@@ -116,7 +116,9 @@ const appendconcat::UUID & State::random_site_by_type(appendconcat::Site::Type t
 		}
 		*site->mutable_id() = random_uuid();
 		site->set_type(type);
-		*site->mutable_name() = random_name_site(site->type());
+		if (site->type() != appendconcat::Site::HOUSE) {
+			*site->mutable_name() = random_name_site(site->type());
+		}
 
 		// FIXME: make these numbers more realistic for things other than town->region and town->town
 		if (site->has_parent()) {
