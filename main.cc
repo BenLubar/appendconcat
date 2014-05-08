@@ -47,7 +47,7 @@ int main(int argc, const char **argv) {
 		std::string timestamp = to_string(msg.time());
 
 		for (auto site : msg.sites()) {
-			if (site.has_type() || site.has_name() || site.has_parent()) {
+			if (site.has_name()) {
 				auto now = state.sites().at(site.id());
 
 				std::cout << timestamp << ", " << to_string(now.name()) << " was";
@@ -85,7 +85,11 @@ int main(int argc, const char **argv) {
 					}
 					if (fig.has_location()) {
 						auto site = state.sites().at(fig.location());
-						std::cout << " in " << to_string(site.name()) << ", a " << to_string(site.type());
+						std::cout << " in ";
+						if (site.has_name()) {
+							std::cout << to_string(site.name()) << ", ";
+						}
+						std::cout << "a " << to_string(site.type());
 						if (site.has_parent()) {
 							auto parent = state.sites().at(site.parent());
 							std::cout << " in " << to_string(parent.name());

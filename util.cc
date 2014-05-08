@@ -334,7 +334,8 @@ inline void words_string(std::string & str, const appendconcat::Name::Words & wo
 		assert(false);
 	}
 
-	str += appendconcat::Name::Word_Name(words.word());
+	auto word_name = appendconcat::Name::Word_Name(words.word());
+	str += std::string(word_name.rbegin(), word_name.rend());
 }
 
 std::string to_string(const appendconcat::Name & name) {
