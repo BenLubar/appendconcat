@@ -9,7 +9,7 @@
 
 State::State(std::string filename, bool readonly) :
 	messages(), sites_cache(), figures_cache(), sites_by_parent(), sites_by_distance(),
-	site_to_vertex(), fout(NULL), gout(NULL), out(NULL) {
+	sites_by_type(), site_to_vertex(), fout(NULL), gout(NULL), out(NULL) {
 	{
 		int fd_in = open(filename.c_str(), O_RDONLY);
 		if (fd_in >= 0) {
@@ -116,6 +116,7 @@ void State::update_caches_full() {
 	figures_cache.clear();
 	sites_cache.clear();
 	sites_by_parent.clear();
+	sites_by_type.clear();
 	sites_by_distance.clear();
 	site_to_vertex.clear();
 	vertex_to_site.clear();
@@ -133,10 +134,16 @@ inline void State::update_caches_one(appendconcat::Message msg) {
 	for (auto site : msg.sites()) {
 		auto & cache = sites_cache[site.id()];
 		if (site.has_parent()) {
-			if (cache.has_parent()) {
-				sites_by_parent[cache.parent()].erase(cache.id());
-			}
+			sites_by_parent[cache.parent()].erase(cache.id());
 			sites_by_parent[site.parent()].insert(site.id());
+		} else if (!cache.has_parent()) {
+			sites_by_parent[site.parent()].insert(site.id());
+		}
+		if (site.has_type()) {
+			if (cache.has_type()) {
+				sites_by_type[cache.type()].erase(cache.id());
+			}
+			sites_by_type[site.type()].insert(site.id());
 		}
 		if (!site_to_vertex.count(site.id())) {
 			site_to_vertex[site.id()] = boost::add_vertex(to_string(site.name()) + " (" + to_string(site.type()) + ")", sites_by_distance);

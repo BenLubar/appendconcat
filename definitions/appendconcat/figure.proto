@@ -9,11 +9,23 @@ message Figure {
 		HUMAN = 0;
 	}
 
-	required UUID id       = 1;
-	optional UUID location = 2; // -> Site.id
-	optional Name name     = 3;
-	optional Time born     = 4;
-	optional Race race     = 5;
-	repeated UUID parent   = 6; // -> Figure.id
-	repeated UUID spouse   = 7; // -> Figure.id
+	message Modifiers {
+		enum Modifier {
+			STOP   = 0;
+			MALE   = 1;
+			FEMALE = 2;
+		}
+
+		optional Modifier  modifier = 1 [default=STOP];
+		optional Modifiers next     = 2;
+	}
+
+	required UUID id             = 1;
+	optional UUID location       = 2; // -> Site.id
+	optional Name name           = 3;
+	optional Time born           = 4;
+	optional Race race           = 5;
+	repeated UUID parent         = 6; // -> Figure.id
+	repeated UUID spouse         = 7; // -> Figure.id
+	optional Modifiers modifiers = 8;
 }

@@ -3,7 +3,7 @@ CXXFLAGS += -Iproto $(shell pkg-config --cflags protobuf) -std=c++11 -ggdb -Wall
 proto   = proto/appendconcat.pb.o proto/appendconcat/time.pb.o \
 	  proto/appendconcat/uuid.pb.o proto/appendconcat/site.pb.o \
 	  proto/appendconcat/figure.pb.o proto/appendconcat/name.pb.o
-objects = main.o util.o state.o $(proto)
+objects = main.o util.o state.o advance.o $(proto)
 
 all: appendconcat
 .PHONY: all
@@ -26,6 +26,7 @@ clean:
 .PHONY: clean
 
 proto/%.pb.cc: proto/.dummy
-main.o:  util.h state.h proto/.dummy
-util.o:  util.h         proto/.dummy
-state.o: util.h state.h proto/.dummy
+main.o:    util.h state.h proto/.dummy
+util.o:    util.h         proto/.dummy
+state.o:   util.h state.h proto/.dummy
+advance.o: util.h state.h proto/.dummy

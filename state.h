@@ -42,6 +42,7 @@ private:
 	std::unordered_map<appendconcat::UUID, appendconcat::Site> sites_cache;
 	std::unordered_map<appendconcat::UUID, appendconcat::Figure> figures_cache;
 	std::unordered_map<appendconcat::UUID, std::unordered_set<appendconcat::UUID> > sites_by_parent;
+	std::unordered_map<appendconcat::Site::Type, std::unordered_set<appendconcat::UUID> > sites_by_type;
 
 	graph_t sites_by_distance;
 	std::unordered_map<appendconcat::UUID, boost::graph_traits<graph_t>::vertex_descriptor> site_to_vertex;
@@ -56,6 +57,13 @@ private:
 	google::protobuf::io::GzipOutputStream *gout;
 	google::protobuf::io::CodedOutputStream *out;
 	std::string buf;
+
+public:
+	// Advance the world to a given time. Advancing to a time less than or equal to now() is a no-op.
+	void advance(const appendconcat::Time &);
+
+private:
+	const appendconcat::UUID & random_site_by_type(appendconcat::Site::Type, const appendconcat::Time &);
 };
 
 #endif

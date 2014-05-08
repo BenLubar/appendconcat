@@ -405,16 +405,27 @@ appendconcat::Time advance_time(appendconcat::Time time, int years) {
 	return time;
 }
 
-static boost::random::uniform_int_distribution<> random_time_dist(1, 28 * 12 * 10);
-
-appendconcat::Time advance_time_random(appendconcat::Time time) {
-	return advance_time(time, 0, 0, random_time_dist(random_number_));
-}
-
 std::string to_string(appendconcat::Site::Type type) {
 	return boost::algorithm::to_lower_copy(appendconcat::Site::Type_Name(type));
 }
 
 google::protobuf::int64 time_as_duration(const appendconcat::Time &time) {
 	return ((time.year() * 12 + time.month()) * 28 + time.day()) * 24 * 60 * 60 + time.second();
+}
+
+std::string to_string(const appendconcat::Figure::Modifiers & modifiers) {
+	std::string str;
+
+	for (appendconcat::Figure::Modifiers m = modifiers; m.modifier() != appendconcat::Figure::Modifiers::STOP; m = m.next()) {
+		if (!str.empty()) {
+			str += " ";
+		}
+		str += to_string(m.modifier());
+	}
+
+	return str;
+}
+
+std::string to_string(appendconcat::Figure::Modifiers::Modifier modifier) {
+	return boost::algorithm::to_lower_copy(appendconcat::Figure::Modifiers::Modifier_Name(modifier));
 }

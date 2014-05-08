@@ -29,102 +29,12 @@ int main(int argc, const char **argv) {
 	State state(opts["save-name"].as<std::string>(), opts["read-only"].as<bool>());
 
 	if (state.raw_messages().size() == 0) {
-		appendconcat::Time time;
-
-		time.set_year(opts["start-history"].as<google::protobuf::int64>());
-		time = advance_time_random(time);
-
-		auto region = random_uuid();
-		{
-			appendconcat::Message msg;
-
-			msg.mutable_time(); // don't set anything on it, we just need to allocate it.
-
-			auto site = msg.add_sites();
-			*site->mutable_id() = region;
-			site->set_type(appendconcat::Site::REGION);
-			*site->mutable_name() = random_name_site(site->type());
-
-			state.add(msg);
-		}
-
-		std::vector<appendconcat::UUID> sites;
-
-		while (time.year() < 0) {
-			appendconcat::Message msg;
-
-			*msg.mutable_time() = time;
-
-			auto figure = msg.add_figures();
-
-			*figure->mutable_id() = random_uuid();
-			*figure->mutable_name() = random_name_figure();
-			*figure->mutable_born() = time;
-			figure->set_race(appendconcat::Figure::HUMAN);
-
-			size_t i = random_number(sites.size() + 4);
-			if (i < sites.size()) {
-				*figure->mutable_location() = sites[i];
-			} else {
-				auto site = msg.add_sites();
-				*site->mutable_parent() = region;
-				*site->mutable_id() = random_uuid();
-				site->set_type(appendconcat::Site::TOWN);
-				*site->mutable_name() = random_name_site(site->type());
-
-				sites.push_back(site->id());
-				*figure->mutable_location() = site->id();
-
-				// it's easy to go out of a town...
-				auto site_near = site->add_nearby();
-				*site_near->mutable_site() = site->parent();
-				auto site_distance = site_near->mutable_distance();
-				site_distance->set_year(0);
-				site_distance->set_month(0);
-				site_distance->set_day(random_number(7) + 1);
-
-				// ... but harder to get back from an arbitrary location
-				auto region_site = msg.add_sites();
-				*region_site->mutable_id() = site->parent();
-				auto region_near = region_site->add_nearby();
-				*region_near->mutable_site() = site->id();
-				auto region_distance = region_near->mutable_distance();
-				region_distance->set_year(0);
-				region_distance->set_month(random_number(4) + 1);
-				region_distance->set_day(random_number(28));
-
-				for (size_t j = random_number(sites.size()); j < sites.size() - 1; j += random_number(sites.size() - j)) {
-					auto site_site_from = msg.add_sites();
-					*site_site_from->mutable_id() = sites[j];
-					auto site_near_from = site_site_from->add_nearby();
-					*site_near_from->mutable_site() = site->id();
-					auto site_distance_from = site_near_from->mutable_distance();
-					site_distance_from->set_year(0);
-					site_distance_from->set_month(random_number(3));
-					site_distance_from->set_day(random_number(28));
-					site_distance_from->set_second(random_number(24 * 60 * 60));
-
-					auto site_near_to = site->add_nearby();
-					*site_near_to->mutable_site() = sites[j];
-					auto site_distance_to = site_near_to->mutable_distance();
-					site_distance_to->set_year(0);
-					site_distance_to->set_month(random_number(3));
-					site_distance_to->set_day(random_number(28));
-					site_distance_to->set_second(random_number(24 * 60 * 60));
-				}
-			}
-
-			state.add(msg);
-
-			time = advance_time_random(time);
-		}
-
-		{
-			// set base time to year 0.
-			appendconcat::Message msg;
-			msg.mutable_time()->set_year(0);
-			state.add(msg);
-		}
+		appendconcat::Message msg;
+		msg.mutable_time()->set_year(opts["start-history"].as<google::protobuf::int64>());
+		state.add(msg);
+		appendconcat::Time zero;
+		zero.set_year(0);
+		state.advance(zero);
 	}
 
 	if (opts.count("graphviz")) {
