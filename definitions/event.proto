@@ -1,0 +1,13 @@
+package appendconcat;
+
+import "uuid.proto";
+import "time.proto";
+import "figure.proto";
+import "site.proto";
+
+message Event {
+	required UUID   id      = 1;
+	required Time   time    = 2;
+	repeated Figure figures = 3;
+	repeated Site   sites   = 4;
+}

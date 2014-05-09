@@ -1,8 +1,7 @@
 CXXFLAGS += -Iproto $(shell pkg-config --cflags protobuf) -std=c++11 -ggdb -Wall -Wextra -O2 -pedantic -Dickweed
 
-proto   = proto/appendconcat.pb.o proto/appendconcat/time.pb.o \
-	  proto/appendconcat/uuid.pb.o proto/appendconcat/site.pb.o \
-	  proto/appendconcat/figure.pb.o proto/appendconcat/name.pb.o
+proto   = proto/event.pb.o proto/time.pb.o proto/uuid.pb.o proto/name.pb.o proto/site.pb.o \
+	  proto/figure.pb.o
 objects = main.o util.o state.o advance.o $(proto)
 
 all: appendconcat
@@ -11,10 +10,10 @@ all: appendconcat
 appendconcat: $(objects)
 	$(CXX) $(objects) -o $@ $(CXXFLAGS) $(LDFLAGS) -lboost_program_options $(shell pkg-config --libs protobuf) -lz
 
-proto/.dummy: $(wildcard definitions/*.proto) $(wildcard definitions/*/*.proto)
+proto/.dummy: $(wildcard definitions/*.proto)
 	rm -rf proto
 	mkdir proto
-	protoc --cpp_out=proto -I definitions definitions/*.proto definitions/*/*.proto
+	protoc --cpp_out=proto -I definitions definitions/*.proto
 	touch proto/.dummy
 
 $(proto:%.o=%.cc) $(proto:%.o=%.h): proto/.dummy

@@ -120,7 +120,7 @@ bool time_compare(const appendconcat::Time & lhs, const appendconcat::Time & rhs
 	return lhs.second() < rhs.second();
 }
 
-bool message_time_compare(const appendconcat::Message & lhs, const appendconcat::Message & rhs) {
+bool event_time_compare(const appendconcat::Event & lhs, const appendconcat::Event & rhs) {
 	return time_compare(lhs.time(), rhs.time());
 }
 
@@ -414,19 +414,6 @@ google::protobuf::int64 time_as_duration(const appendconcat::Time &time) {
 	return ((time.year() * 12 + time.month()) * 28 + time.day()) * 24 * 60 * 60 + time.second();
 }
 
-std::string to_string(const appendconcat::Figure::Modifiers & modifiers) {
-	std::string str;
-
-	for (appendconcat::Figure::Modifiers m = modifiers; m.modifier() != appendconcat::Figure::Modifiers::STOP; m = m.next()) {
-		if (!str.empty()) {
-			str += " ";
-		}
-		str += to_string(m.modifier());
-	}
-
-	return str;
-}
-
-std::string to_string(appendconcat::Figure::Modifiers::Modifier modifier) {
-	return boost::algorithm::to_lower_copy(appendconcat::Figure::Modifiers::Modifier_Name(modifier));
+std::string to_string(appendconcat::Figure::Modifier modifier) {
+	return boost::algorithm::to_lower_copy(appendconcat::Figure::Modifier_Name(modifier));
 }

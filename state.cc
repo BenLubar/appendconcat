@@ -8,7 +8,7 @@
 #include "state.h"
 
 State::State(std::string filename, bool readonly) :
-	messages(), sites_cache(), figures_cache(), sites_by_parent(), sites_by_type(),
+	events(), sites_cache(), figures_cache(), sites_by_parent(), sites_by_type(),
 	sites_by_distance(), site_to_vertex(), vertex_to_site(),
 	fout(NULL), gout(NULL), out(NULL) {
 	{
@@ -28,7 +28,7 @@ State::State(std::string filename, bool readonly) :
 			while (in.ReadVarint64(&len)) {
 				assert(in.ReadString(&buf, len));
 
-				appendconcat::Message msg;
+				appendconcat::Event msg;
 				assert(msg.ParseFromString(buf));
 
 				if (!out_of_order) {
@@ -39,11 +39,11 @@ State::State(std::string filename, bool readonly) :
 					}
 				}
 
-				messages.push_back(msg);
+				events.push_back(msg);
 			}
 
 			if (out_of_order) {
-				std::stable_sort(messages.begin(), messages.end(), message_time_compare);
+				std::stable_sort(events.begin(), events.end(), event_time_compare);
 			}
 			update_caches_full();
 		}
@@ -57,7 +57,8 @@ State::State(std::string filename, bool readonly) :
 		out = new google::protobuf::io::CodedOutputStream(gout);
 
 		bool change = false;
-		appendconcat::Message msg;
+		appendconcat::Event msg;
+		*msg.mutable_id() = random_uuid();
 		for (auto site : sites_cache) {
 			// connect disconnected regions
 			if (site.second.type() == appendconcat::Site::REGION && !site.second.has_parent()) {
@@ -98,12 +99,12 @@ State::~State() {
 	}
 }
 
-void State::add(appendconcat::Message msg) {
+void State::add(appendconcat::Event msg) {
 	assert(!read_only());
 
-	messages.push_back(msg);
+	events.push_back(msg);
 	if (time_compare(msg.time(), current_time)) {
-		std::stable_sort(messages.begin(), messages.end(), message_time_compare);
+		std::stable_sort(events.begin(), events.end(), event_time_compare);
 		update_caches_full();
 	} else {
 		update_caches_one(msg);
@@ -123,12 +124,12 @@ void State::update_caches_full() {
 	vertex_to_site.clear();
 	current_time.Clear();
 
-	for (auto msg : messages) {
+	for (auto msg : events) {
 		update_caches_one(msg);
 	}
 }
 
-inline void State::update_caches_one(appendconcat::Message msg) {
+inline void State::update_caches_one(const appendconcat::Event & msg) {
 	for (auto fig : msg.figures()) {
 		figures_cache[fig.id()].MergeFrom(fig);
 	}

@@ -21,7 +21,8 @@ namespace {
 void State::advance(const appendconcat::Time & target_time) {
 	while (time_compare(current_time, target_time)) {
 		bool change = false;
-		appendconcat::Message msg;
+		appendconcat::Event msg;
+		*msg.mutable_id() = random_uuid();
 
 		*msg.mutable_time() = current_time;
 		do {
@@ -61,7 +62,9 @@ const appendconcat::UUID & State::random_site_by_type(appendconcat::Site::Type t
 	auto & sites = sites_by_type[type];
 
 	if (random_number(sites.size() + new_site_margin) < new_site_margin) {
-		appendconcat::Message msg;
+		appendconcat::Event msg;
+		*msg.mutable_id() = random_uuid();
+
 		*msg.mutable_time() = time;
 		auto site = msg.add_sites();
 

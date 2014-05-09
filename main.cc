@@ -28,8 +28,10 @@ int main(int argc, const char **argv) {
 
 	State state(opts["save-name"].as<std::string>(), opts["read-only"].as<bool>());
 
-	if (state.raw_messages().size() == 0) {
-		appendconcat::Message msg;
+	if (state.raw_events().empty()) {
+		appendconcat::Event msg;
+		*msg.mutable_id() = random_uuid();
+
 		msg.mutable_time()->set_year(opts["start-history"].as<google::protobuf::int64>());
 		state.add(msg);
 		appendconcat::Time zero;
@@ -43,7 +45,7 @@ int main(int argc, const char **argv) {
 	}
 
 
-	for (auto msg : state.raw_messages()) {
+	for (auto msg : state.raw_events()) {
 		std::string timestamp = to_string(msg.time());
 
 		for (auto site : msg.sites()) {

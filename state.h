@@ -16,9 +16,9 @@ public:
 	explicit State(std::string filename, bool readonly = false);
 	~State();
 
-	void add(appendconcat::Message);
-	inline const std::vector<appendconcat::Message> & raw_messages() const {
-		return messages;
+	void add(appendconcat::Event);
+	inline const std::vector<appendconcat::Event> & raw_events() const {
+		return events;
 	}
 	inline const std::unordered_map<appendconcat::UUID, appendconcat::Site> & sites() const {
 		return sites_cache;
@@ -38,7 +38,7 @@ public:
 	}
 
 private:
-	std::vector<appendconcat::Message> messages;
+	std::vector<appendconcat::Event> events;
 	std::unordered_map<appendconcat::UUID, appendconcat::Site> sites_cache;
 	std::unordered_map<appendconcat::UUID, appendconcat::Figure> figures_cache;
 	std::unordered_map<appendconcat::UUID, std::unordered_set<appendconcat::UUID> > sites_by_parent;
@@ -51,7 +51,7 @@ private:
 	appendconcat::Time current_time;
 
 	void update_caches_full();
-	inline void update_caches_one(appendconcat::Message);
+	inline void update_caches_one(const appendconcat::Event &);
 
 	google::protobuf::io::FileOutputStream *fout;
 	google::protobuf::io::GzipOutputStream *gout;

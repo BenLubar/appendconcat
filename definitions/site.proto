@@ -1,8 +1,8 @@
 package appendconcat;
 
-import "appendconcat/uuid.proto";
-import "appendconcat/name.proto";
-import "appendconcat/time.proto";
+import "uuid.proto";
+import "name.proto";
+import "time.proto";
 
 message Site {
 	enum Type {

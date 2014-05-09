@@ -9,10 +9,10 @@
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 
-#include "appendconcat.pb.h"
+#include "event.pb.h"
 
 bool time_compare(const appendconcat::Time &, const appendconcat::Time &);
-bool message_time_compare(const appendconcat::Message &, const appendconcat::Message &);
+bool event_time_compare(const appendconcat::Event &, const appendconcat::Event &);
 
 extern boost::mt19937 random_number_;
 
@@ -34,8 +34,7 @@ appendconcat::Name random_name_site(appendconcat::Site::Type);
 std::string to_string(const appendconcat::UUID &);
 std::string to_string(const appendconcat::Name &);
 std::string to_string(const appendconcat::Time &);
-std::string to_string(const appendconcat::Figure::Modifiers &);
-std::string to_string(appendconcat::Figure::Modifiers::Modifier);
+std::string to_string(appendconcat::Figure::Modifier);
 std::string to_string(appendconcat::Site::Type);
 
 google::protobuf::int64 time_as_duration(const appendconcat::Time &);

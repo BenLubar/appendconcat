@@ -1,0 +1,28 @@
+package appendconcat;
+
+import "uuid.proto";
+import "name.proto";
+import "time.proto";
+
+message Figure {
+	enum Race {
+		HUMAN = 0;
+	}
+
+	enum Modifier {
+		NONE     = 0; // no-op, used to clear modifier stack when removing all modifiers.
+		MALE     = 1; // can reproduce with females of the same race.
+		FEMALE   = 2; // can reproduce with males of the same race.
+		DEAD     = 3; // cannot act. can be ANIMATED by necromancers.
+		ANIMATED = 4; // negates DEAD's "cannot act". cannot reproduce.
+	}
+
+	required UUID id       = 1;
+	optional UUID location = 2; // -> Site.id
+	optional Name name     = 3;
+	optional Time born     = 4;
+	optional Race race     = 5;
+	repeated UUID parent   = 6; // -> Figure.id
+	repeated UUID spouse   = 7; // -> Figure.id
+	repeated Modifier mods = 8 [packed=true];
+}
